@@ -26,10 +26,7 @@ def download_video(type_of_videos,i,duration):
 
         api.search_videos(video_tag, page=num_page, results_per_page=40)
         videos = api.get_videos()
-        lastresult=False
-        numresult=0
-        while not lastresult:
-            data=random.choice(videos)
+        for data in videos:
             if data.width > data.height and data.duration>=duration*0.5: #look for horizontal orientation videos
                 # write_file('downloaded_files.txt', data.url)
                 url_video = 'https://www.pexels.com/video/' + str(data.id) + '/download' #create the url with the video id
@@ -37,9 +34,6 @@ def download_video(type_of_videos,i,duration):
                 with open('./stockvideos/'+str(i)+'.mp4', 'wb') as outfile:
                     outfile.write(r.content)
                 return './stockvideos/'+str(i)+'.mp4' #download the video
-            numresult+=1
-            if numresult==40:
-                lastresult=True
         num_page += 1
 def download_shorts(type_of_videos,i,duration):
     load_dotenv()  # take environment variables from .env.
@@ -55,10 +49,7 @@ def download_shorts(type_of_videos,i,duration):
 
         api.search_videos(video_tag, page=num_page, results_per_page=40)
         videos = api.get_videos()
-        lastresult=False
-        numresult=0
-        while not lastresult:
-            data=random.choice(videos)
+        for data in videos:
             if data.width < data.height and data.duration>=duration*0.5: #look for horizontal orientation videos
                 # write_file('downloaded_files.txt', data.url)
                 url_video = 'https://www.pexels.com/video/' + str(data.id) + '/download' #create the url with the video id
@@ -66,12 +57,9 @@ def download_shorts(type_of_videos,i,duration):
                 with open('./stockvideos/'+str(i)+'.mp4', 'wb') as outfile:
                     outfile.write(r.content)
                 return './stockvideos/'+str(i)+'.mp4' #download the video
-            numresult+=1
-            if numresult==40:
-                lastresult=True
         num_page += 1
 
-def video(division, tematicas, title, duration):
+def video(division, tematicas, duration):
     voices = [
             "Brian",
             "Russell",
@@ -151,8 +139,8 @@ def video(division, tematicas, title, duration):
                 audio_concat=concatenate_audioclips(audioclips)
                 new_audioclip = CompositeAudioClip([audio_concat])
                 new_audioclip=new_audioclip.fx( vfx.speedx, ratio)
-                for len in lengths:
-                    len=len*(2-ratio)
+                for lent in lengths:
+                    lent=lent*(2-ratio)
                 for i,tematica in enumerate(tematicas):
                     download_video(tematica,i,lengths[i])
                     clip = VideoFileClip("./stockvideos/"+str(i)+".mp4")
@@ -187,9 +175,9 @@ def video(division, tematicas, title, duration):
                 new_audioclip = CompositeAudioClip([audio_concat])
                 new_audioclip=new_audioclip.fx( vfx.speedx, 0.75)
                 lengths2=[]
-                for len in lengths:
-                    len=len*1.25
-                    lengths2.append(len+sum)
+                for lent in lengths:
+                    lent=lent*1.25
+                    lengths2.append(lent+sum)
                 for i,tematica in enumerate(tematicas):
                     download_video(tematica,i,lengths2[i])
                     clip = VideoFileClip("./stockvideos/"+str(i)+".mp4")
@@ -319,6 +307,7 @@ def video(division, tematicas, title, duration):
             for texto in division:
                 texto=texto.replace("\"", '')
                 texto=re.split(r'[^\w\s\'\"!]', texto)
+                print(texto)
                 total=0
                 min=i
                 for j in texto:
@@ -328,10 +317,13 @@ def video(division, tematicas, title, duration):
                 for j in range(min,i):
                     ratios[j]=ratios[j]/total
             i=0
+            c=0
+            print(ratios)
+            print(division)
             for texto in division:
                 for j in texto:
                     textos.append(TextClip(
-                    texto,
+                    j,
                     font='Amiri-Bold',
                     fontsize=100,
                     color='white',
@@ -339,8 +331,9 @@ def video(division, tematicas, title, duration):
                     size=(video_concat.size[0]*0.8, None),
                     stroke_color='black',
                     stroke_width=4
-                    ).set_duration(lengths[i]*ratios[i]))
+                    ).set_duration(lengths[c]*ratios[i]))
                     i+=1
+                c+=1
             text_concat = concatenate_videoclips(textos).set_position("center")
             final=CompositeVideoClip([video_concat, text_concat])
             return final
