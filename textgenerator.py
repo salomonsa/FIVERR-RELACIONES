@@ -1,6 +1,6 @@
 import openai
 import os
-
+import re
 from dotenv import load_dotenv, find_dotenv
 _ = load_dotenv(find_dotenv()) # read local .env file
 
@@ -11,29 +11,41 @@ def get_completion(prompt, model="gpt-3.5-turbo"): # Andrew mentioned that the p
     response = openai.ChatCompletion.create(
         model=model,
         messages=messages,
-        temperature=0, # this is the degree of randomness of the model's output
+        temperature=0.77, # this is the degree of randomness of the model's output
+        max_tokens=2500
     )
     return response.choices[0].message["content"]
 
 title="El poder de los conflictos en la relación"
+duration=10
+minwords=duration*150
+maxwords=minwords+100
 
 prompt1 = f"""
 Your task is to generate a text oriented to a general public about the subject of the title.
 
-Generate the text using the title below, delimited by triple 
-backticks, in at most 200 words.
+Generate the text using the title below, which is delimited by triple 
+backticks, in at most {minwords} words.
 
-Title: {title}
+Title: ```{title}```
 """
-response1 = get_completion(prompt1)
+response = get_completion(prompt1)
+i=0
+palabras=len(re.findall(r'\w+', response))
+while palabras<minwords:
+    prompt2 = f"""
+    Your task is to rewrite a text and do it longer.
 
-prompt2 = f"""
-Your task is to rewrite a text and doing it longer.
+    Rewrite the text, delimited by triple backticks, so it's longer than the original but no longer than {maxwords} words.
 
-Rewrite the text, delimited by triple backticks, so it's longer than the original but no longer than 400 words.
+    Text: ```{response}```
+    """
+    response = get_completion(prompt2)
+    palabras=len(re.findall(r'\w+', response))
+    i+=1
+    print("\ni: "+str(i))
+    print("\npalabras: "+str(palabras))
+    #print("\n\nRESPONSE: "+response)
 
-Text: {response1}
-"""
-response2 = get_completion(prompt2)
 
-print("\nRESPONSE 1: "+response1+"\n\n\nRESPONSE 2: "+response2)
+print("\nRESPONSE: "+response)
