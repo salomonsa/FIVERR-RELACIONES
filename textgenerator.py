@@ -16,68 +16,90 @@ def get_completion(prompt, temp,model="gpt-3.5-turbo"):
         model=model,
         messages=messages,
         temperature=temp, # this is the degree of randomness of the model's output
-        max_tokens=2200
+        max_tokens=2000
     )
     return response.choices[0].message["content"]
 
-def Creadortexto(title,duration,top):
+def Creadortexto(title,duration):
     if duration>1:
-        minwords=int(float(duration)*160)
+        minwords=int(float(duration)*150)
+        maxwords=minwords+int(0.2*minwords)
     else:
-        minwords=100
-    maxwords=minwords+int(0.1*minwords)
+        minwords=110
+        maxwords=130
+    maxwords=minwords+int(0.2*minwords)
     menor=True
     mayor=True
-    if top=="si" or "Si" or "sí" or "Sí":
-        prompt1 = f"""
-        Tu trabajo es crear un top original de {minwords} palabras, debes crear el top en base al titulo de abajo entre triple tildes.
-        Numera cada posición del top en orden descendente(3, 3a posicion. 2, 2a posicion. 1, 1a posicion).
-        Adapta todo lo necesario el top para que no exceda las {maxwords} palabras en total.
 
-        Titulo: ```{title}```
-        """
-    else:
-        prompt1 = f"""
-        Tu trabajo es generar un texto de {minwords} palabras, orientado a un publico general sobre el tema del titulo.
 
-        Genera el texto usando el titulo de abajo, el cual se encuentra entre triple tildes, en como maximo {maxwords} palabras.
+    prompt1 = f"""
+    Tu tarea es generar un texto de {minwords} palabras, orientado a un publico general sobre el tema del titulo(es importante que\
+            el texto apoye el titulo y que no lo contradiga, y no debes dar tu opnion sobre el titulo, de hecho no hagas referencia\
+                directa al titulo).
 
-        Titulo: ```{title}```
-        """
+    Genera el texto usando el titulo de abajo, el cual se encuentra entre triple tildes, en como maximo {maxwords} palabras.
+
+    Titulo: ```{title}```
+
+    Tu respuesta debe de ser unicamente el texto creado.
+    """
     response = get_completion(prompt1,0)
     i=0
     palabras=len(re.findall(r'\w+', response))
     if palabras>=minwords:
             menor=False
-    while menor:
-        prompt2 = f"""
-        Tu trabajo es reescribir el texto dado y alargarlo.
-
-        Reescribe el texto, delimitado por triple tildes, para que sea más largo que el original pero no más de {maxwords} palabras.
-
-        Texto: ```{response}```
-        """
-        response = get_completion(prompt2,1)
-        palabras=len(re.findall(r'\w+', response))
-        if palabras>=minwords or i>4:
-            menor=False
-        i=i+1
-    
-    if palabras<=maxwords:
+    if palabras<maxwords:
         mayor=False
-    while mayor:
-        prompt2 = f"""
-        Tu trabajo es resumir el texto dado en {minwords}-{maxwords} palabras.
+    while menor or mayor:
+        time.sleep(15)
+        while menor:
+            
+            prompt2 = f"""
+            Tu tarea es reescribir y extender el siguiente texto para que contenga más palabras pero no exceda las {maxwords} palabras:
 
-        Reescribe el texto, delimitado por triple tildes, para que sea más cortp que el original pero mayor de {minwords} palabras.
+            Reescribe el texto, delimitado por triple tildes, y agrega contenido para extenderlo, \
+                asegurándote de que no contenga más de {maxwords} palabras.(no hagas referencia directa al numero de palabras)
 
-        Texto: ```{response}```
-        """
-        response = get_completion(prompt2,1)
-        palabras=len(re.findall(r'\w+', response))
-        if palabras<=maxwords or i>4:
-            mayor=False
-        i=i+1
+            Texto: ```{response}```
+
+            Puedes agregar detalles, ejemplos o explicaciones adicionales para hacer el texto más completo y significativo.
+            """
+            response = get_completion(prompt2,0)
+            palabras=len(re.findall(r'\w+', response))
+            i=i+1
+            if palabras>=minwords or i>7:
+                menor=False
+            else:
+                menor=True
+            if palabras<maxwords or i>7:
+                mayor=False
+            else:
+                mayor=True
+            
+
+        while mayor:
+            
+            prompt2 = f"""
+            Tu tarea es reescribir el siguiente texto en un rango de {minwords}-{maxwords} palabras:
+
+            Reescribe el texto, delimitado por triple tildes, de manera más concisa mientras te aseguras de que contenga \
+                al menos {minwords} palabras y no exceda las {maxwords} palabras.(no hagas referencia directa al numero de palabras)
+
+            Texto: ```{response}```
+            """
+            response = get_completion(prompt2,0)
+            palabras=len(re.findall(r'\w+', response))
+            i=i+1
+            if palabras>=minwords or i>7:
+                menor=False
+            else:
+                menor=True
+            if palabras<maxwords or i>7:
+                mayor=False
+            else:
+                mayor=True
+            
+            
 
     return response
 
@@ -106,15 +128,25 @@ def jasonmomoa(guion):
     
     for i,text in enumerate(division):
         prompt4=f"""
-            Your task is to examine the sentiment of the text below, which is delimited by triple backticks(for exemple: happy, erotic, conflict).
-            Examine the sentiment of the text and resume it in at most 2 or 3 words. 
-            Your answer must only be the return of the resultant sentiment(always in english).
+            Your task is to examine the theme of the text below, which is delimited by triple backticks(for exemple: happy, erotic, conflict).
+            Examine the theme/sentiment of the text and resume it in 2 or 3 words. 
+            Your answer must only be the return of the resultant theme/sentiment(always in english).
 
             Text: ```{text}```
             """
-        tematicas.append(get_completion(prompt4,0))
+        tematicas.append(get_completion(prompt4,1))
         i+=1
         time.sleep(5)
     
     return [descripcion,tags,division,tematicas]
 
+def sinonimo(text):
+    prompt=f"""
+            Your task is to change this word/words, which is/are between triple backticks, for a synonym. 
+            Your response must only be the resultant synonym without any backtick.(always in english)
+
+            Word/words: ```{text}```
+            """
+    
+    return get_completion(prompt,1.5)
+    
