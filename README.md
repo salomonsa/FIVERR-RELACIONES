@@ -15,3 +15,6 @@ COSAS IMPORTANTES, LEER ANTES DE USAR EL PROGRAMA:
 5. Cuando intentes correr el programa sea en la terminal o en VScode se te pedirá el titulo del video, la duración y el tipo de voz. Una vez elegidos el programa procede a crear el guión con OpenIA(lo cual suele ser ráìdo), seguidamente procede a montar el video, en esta parte pueden saltar algunos errores relacionados con limites de demandas a las APIs(en estos casos con esperar se arregla), y cuanto más largo sea el video mayor será la probabilidad de que estos aparezcan, por eso te recomiendo empezar probando el programa con videos cortos.
 
 6. Al cambiar de dispositivo no es raro que aparezcan errores inesperados, si tienes alguna duda escribeme.
+
+
+Algunos resultados del programa: https://www.youtube.com/channel/UCh-5_hTpJavkNrZf6NPT9yA
