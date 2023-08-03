@@ -12,7 +12,7 @@ COSAS IMPORTANTES, LEER ANTES DE USAR EL PROGRAMA:
 
 4. Las carpetas stockvideos y speech no las debes tocar, en stockmusic has de meter los arhivos de música (mp3) que quieres que el video tenga, si metes una solo se repetirá en bucle durante todo el video, si metes varias el programa escogerá una al azar y la pondrá en bucle.
 
-5. Cuando intentes correr el programa sea en la terminal o en VScode se te pedirá el titulo del video, la duración y el tipo de voz. Una vez elegidos el programa procede a crear el guión con OpenIA(lo cual suele ser ráìdo), seguidamente procede a montar el video, en esta parte pueden saltar algunos errores relacionados con limites de demandas a las APIs(en estos casos con esperar se arregla), y cuanto más largo sea el video mayor será la probabilidad de que estos aparezcan, por eso te recomiendo empezar probando el programa con videos cortos.
+5. Cuando intentes correr el programa se te pedirá el titulo del video, la duración y el tipo de voz. Una vez elegidos el programa procede a crear el guión con OpenIA(lo cual suele ser ráìdo), seguidamente procede a montar el video, en esta parte pueden saltar algunos errores relacionados con limites de demandas a las APIs(en estos casos con esperar se arregla), y cuanto más largo sea el video mayor será la probabilidad de que estos aparezcan, por eso te recomiendo empezar probando el programa con videos cortos.
 
 6. Al cambiar de dispositivo no es raro que aparezcan errores inesperados, si tienes alguna duda escribeme.
 
