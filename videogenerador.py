@@ -1,12 +1,9 @@
 from TTS.streamlabs_polly import StreamlabsPolly
 from mutagen.mp3 import MP3
 import random, os
-import argparse
-import json
 import string
 import time
 import requests
-import tqdm
 import pexelsPy
 from moviepy.editor import concatenate_audioclips, AudioFileClip
 from moviepy.editor import *
@@ -197,26 +194,6 @@ def video(division, tematicas, duration,voz):
 
     final=CompositeVideoClip([video_concat, text_concat])
 
-    archivos_stockmusic = os.listdir("stockmusic")
-    archivos_mp3 = [archivo for archivo in archivos_stockmusic if archivo.lower().endswith(".mp3")]
-
-    if archivos_mp3:
-
-        nombre_musica = random.choice(archivos_mp3)
-        ruta_musica = os.path.join("stockmusic", nombre_musica)
-        musica = AudioFileClip(ruta_musica)
-        duracion_video = final.duration
-        musica_en_bucle = afx.audio_loop(musica, duration=duracion_video)
-
-        audio_actual = final.audio
-        nuevo_audio = CompositeAudioClip([audio_actual, musica_en_bucle.volumex(0.1)])
-        final = final.set_audio(nuevo_audio)
-        
-    else:
-        print("No se encontraron archivos MP3 en la carpeta 'stockmusic', el video no tendrá música.")
-
-    
-
     if short:
         if final.duration>=60:
             factor_velocidad = final.duration/58
@@ -249,6 +226,23 @@ def video(division, tematicas, duration,voz):
             print("Velocidad: "+str(factor_velocidad))
         final_video=final
 
+    archivos_stockmusic = os.listdir("stockmusic")
+    archivos_mp3 = [archivo for archivo in archivos_stockmusic if archivo.lower().endswith(".mp3")]
+
+    if archivos_mp3:
+
+        nombre_musica = random.choice(archivos_mp3)
+        ruta_musica = os.path.join("stockmusic", nombre_musica)
+        musica = AudioFileClip(ruta_musica)
+        duracion_video = final_video.duration
+        musica_en_bucle = afx.audio_loop(musica, duration=duracion_video)
+
+        audio_actual = final_video.audio
+        nuevo_audio = CompositeAudioClip([audio_actual, musica_en_bucle.volumex(0.07)])
+        final_video = final_video.set_audio(nuevo_audio)
+        
+    else:
+        print("No se encontraron archivos MP3 en la carpeta 'stockmusic', el video no tendrá música.")
 
     return final_video
 
