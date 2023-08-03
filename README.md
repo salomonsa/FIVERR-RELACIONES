@@ -4,7 +4,7 @@ Para instalar el programa escribe en la cmd, en la carpeta en la que quieras ins
 
 COSAS IMPORTANTES, LEER ANTES DE USAR EL PROGRAMA:
 
-1. Cambia el nombre del archivo dotenv a .env, ábrelo y escribe tu token de API de OPENAI y tu token de API de PEXELS en sus respectivas webs.
+1. Cambia el nombre del archivo dotenv a .env, ábrelo y escribe tu token de API de OPENAI y tu token de API de PEXELS, los encontrarás en sus respectivas webs.
 
 2. Instala todos los requisitos en el archivo requirements.txt. Utiliza el comando pip install -r requirements.txt para instalar todos los módulos y paquetes de Python que están enumerados en tu archivo requirements.txt. Además, y esto es ESENCIAL para que el programa funcione, instala por separado Imagemagick en su sitio web oficial.
 
